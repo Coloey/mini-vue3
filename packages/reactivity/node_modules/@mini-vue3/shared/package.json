@@ -1,0 +1,12 @@
+{
+  "name": "@mini-vue3/shared",
+  "version": "1.0.0",
+  "description": "@mini-vue3/shared",
+  "license": "MIT",
+  "buildOptions":{
+    "formats": [
+      "esm-bundler",
+      "cjs"
+    ]
+  }
+}
