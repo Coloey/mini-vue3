@@ -1,12 +1,12 @@
-import { createDep } from "./dep";
+import { createDep,Dep } from "./dep";
 import { ReactiveEffect } from "./effect";
 import { trackRefValue, triggerRefValue } from "./ref";
 
-export class ComputedRefImpl {
-    public dep: any;
+export class ComputedRefImpl<T> {
+    public dep: Dep;
     public effect: ReactiveEffect;
     private _dirty: boolean;
-    private _value
+    private _value!: T;
     constructor(getter) {
         this._dirty=true
         this.dep = createDep()
@@ -17,13 +17,14 @@ export class ComputedRefImpl {
                 triggerRefValue(this)
             }
         })
+        this.effect.computed = this
     }
     get value() {
         //收集依赖
         trackRefValue(this)
         if(this._dirty) {
             this._dirty = false
-            this._value = this.effect.run()
+            this._value = this.effect.run()!
         }
         return this._value
     }

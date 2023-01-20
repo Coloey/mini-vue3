@@ -3,7 +3,7 @@ export function initSlots(instance,children) {
     const {vnode} = instance
     console.log("初始化slots")
     if(vnode.shapeFlag & ShapeFlags.SLOTS_CHILDREN) {
-        normalizeObjectSlots(children,(instace.slots = {}))
+        normalizeObjectSlots(children,(instance.slots = {}))
     }
 }
 const normalizeSlotValue = (value) => {

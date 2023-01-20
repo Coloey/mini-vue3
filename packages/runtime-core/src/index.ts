@@ -5,7 +5,7 @@ export { inject, provide } from "./apiInject";
 export { renderSlot } from "./helpers/renderSlot";
 export { createTextVNode, createElementVNode } from "./vnode";
 export { createRenderer } from "./renderer";
-export { toDisplayString } from "@mini-vue/shared";
+export { toDisplayString } from "@mini-vue3/shared";
 export { watchEffect } from "./apiWatch";
 export {
   // core
@@ -25,4 +25,4 @@ export {
   effect,
   stop,
   computed,
-} from "@mini-vue/reactivity";
+} from "@mini-vue3/reactivity";

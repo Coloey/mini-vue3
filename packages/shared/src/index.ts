@@ -1,3 +1,5 @@
+export * from "../src/shapeFlag"
+export * from "../src/toDisplayString"
 export const isObject = (value) =>{
   return typeof value === 'object' && value !== null
 }
@@ -42,9 +44,9 @@ export function hasOwn(val,key){
 //首字母大写
 export const capitalize = (str: string) =>
 	str.charAt(0).toUpperCase()+str.slice(1)
-export function isOn = (key) => /^on[A-Z]/.test(key)
+export const isOn = key => /^on[A-Z]$/.test(key)
 //添加on前缀，并且首字母大写
-export const toHandlerKey = (key: string) => 
+export const toHandlerKey = (str: string) => 
 	str ? `on${capitalize(str)}` : ``
 //用来匹配kebab-case的情况
 /*比如onTest-event 可以匹配到T,取到T在前面加一个 - \B可以匹配到大写字母

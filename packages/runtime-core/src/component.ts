@@ -1,6 +1,7 @@
 import {emit} from "./componentEmits"
 import { initProps } from "./componentProps"
 import { initSlots } from "./componentSlots"
+import { proxyRefs, shallowReadonly } from "@mini-vue3/reactivity"
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance"
 export function createComponentInstance(vnode,parent) {
     const instance = {
@@ -14,7 +15,7 @@ export function createComponentInstance(vnode,parent) {
         isMounted: false,
         attrs: {},//存放attrs的数据
         ctx: {},
-        setupState:{}//存储setup的返回值
+        setupState:{},//存储setup的返回值
         emit: () => {}
     }
     //prod环境下的ctx是下面简单的结构
@@ -94,8 +95,13 @@ function createSetupContext(instance) {
         expose: () => {}
     }
 }
+export type Data = Record<string,unknown>
+export interface CurrentInstanceInterface {
+    provides: Data,
+    parent: any
+}
 let currentInstance = {}
-export function getCurrentInstance(instance) {
+export function getCurrentInstance(): any {
     return currentInstance
 }
 export function setCurrentInstance(instance) {

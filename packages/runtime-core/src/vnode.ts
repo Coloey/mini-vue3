@@ -40,13 +40,13 @@ export function normalizeChildren(vnode,children) {
 export const Text = Symbol("Text")
 export const Fragment =Symbol("Fragment")
 export function createTextVNode(text: string='') {
-    return createTextVNode(Text,{},text)
+    return createVNode(Text,{},text)
 }
 //标准化vnode的格式
 export function normalizeVNode(child) {
     //暂时只支持处理child为string 和number的情况
     if(typeof child === 'string' || typeof child === 'number') {
-        return createTextVNode(Text,null,String(child))
+        return createVNode(Text,null,String(child))
     }else{
         return child
     }

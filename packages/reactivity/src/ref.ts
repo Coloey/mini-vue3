@@ -1,7 +1,7 @@
 import { hasChanged, isObject } from "@mini-vue3/shared";
 import { isTracking, trackEffects, triggerEffects } from "./effect";
 import { reactive } from "./reactive";
-
+import { createDep } from "./dep";
 export class RefImpl {
     private _rawValue: any;
     private _value: any;
@@ -50,7 +50,7 @@ export function trackRefValue(ref) {
 const shallowUnwrapHandlers = {
     get(target,key,receiver) {
         return unRef(Reflect.get(target,key,receiver))
-    }
+    },
     set(target,key,value,receiver) {
         const oldValue = target[key]
         if(isRef(oldValue) && !isRef(value)){
@@ -61,7 +61,7 @@ const shallowUnwrapHandlers = {
     }
 }
 export function proxyRefs(objectWithRefs) {
-    return new Proxy(objectWithRefs,)
+    return new Proxy(objectWithRefs,shallowUnwrapHandlers)
 }
 //拿到ref里面的值
 export function unRef(ref) {

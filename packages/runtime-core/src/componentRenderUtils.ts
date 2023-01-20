@@ -1,5 +1,5 @@
-export function shouldUpdateComponent(preVNode,nextNode) {
-    const {props: prevProps} = prevVNode
+export function shouldUpdateComponent(preVNode,nextVNode) {
+    const {props: prevProps} = preVNode
     const {props: nextProps} = nextVNode
     //props没有变化，就不需要更新
     if(prevProps === nextProps)return false
@@ -7,7 +7,7 @@ export function shouldUpdateComponent(preVNode,nextNode) {
     if(!prevProps)return !!nextProps
     //之前有值，现在没值，那么需要更新
     if(!nextProps)return true
-    return hasPropsChanged(prevprops,nextProps)
+    return hasPropsChanged(prevProps,nextProps)
 }
 function hasPropsChanged(prevProps,nextProps): boolean {
     //对比每一个props.key

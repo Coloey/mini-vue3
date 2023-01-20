@@ -6,9 +6,9 @@ import {hasOwn} from "@mini-vue3/shared"
 const publicPropertiesMap = {
     //当用户调用instance.proxy.$emit会触发这个函数
     //i就是instance缩写，也就是组件实例对象
-    $el: (i) => i.vnode.el;
-    $emit: (i) => i.emit;
-    $slots: (i) => i.slots;
+    $el: (i) => i.vnode.el,
+    $emit: (i) => i.emit,
+    $slots: (i) => i.slots,
     $props: (i) => i.props
 }
 export const PublicInstanceProxyHandlers = {
@@ -28,15 +28,13 @@ export const PublicInstanceProxyHandlers = {
         if(publicGetter){
             return publicGetter(instance)
         }
-    }
+    },
     set({_:instance},key,value) {
         const {setupState} = instance
         if(hasOwn(setupState,key)){
             //有的话就是直接赋值
             setupState[key] = value
-        }else if(hasOwn(props,key)){
-            props[key]=value
-        }else{
+        } else {
             console.error("不存在")
         }
         return true

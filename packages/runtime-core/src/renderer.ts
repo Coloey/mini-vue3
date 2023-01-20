@@ -1,11 +1,12 @@
 import { ShapeFlags } from "@mini-vue3/shared"
-import { effect } from "packages/reactivity/src/effect"
+import { effect } from "@mini-vue3/reactivity"
 import { setupComponent } from "./component"
 import { createComponentInstance } from "./component"
+import { queueJob } from "./scheduler"
 import { shouldUpdateComponent } from "./componentRenderUtils"
 import { createAppAPI } from "./createApp"
-import { normalizeChildren, normalizeVNode } from "./vnode"
-export function createRenderer(options) {
+import { normalizeChildren, normalizeVNode, Fragment, Text } from "./vnode"
+export function createRenderer(options): any {
     const {
         createElement: hostCreateElemet,
         setElementText: hostSetElementText,
@@ -40,7 +41,7 @@ export function createRenderer(options) {
                 if(shapeFlag & ShapeFlags.ELEMENT) {
                     console.log("处理element")
                     processElement(n1,n2,container,anchor,parentComponent)
-                }else if(shapeFlag & ShapeFlag.STATEFUL_COMPONENT) {
+                }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
                     console.log("处理component")
                     processComponent(n1,n2,container,parentComponent)
                 }
@@ -73,7 +74,7 @@ export function createRenderer(options) {
             }
         }
     }
-    function processElement(n1,n2,container,anchor,parantComponent) {
+    function processElement(n1,n2,container,anchor,parentComponent) {
         if(!n1){
             mountElement(n2,container,anchor)
         }else{
@@ -104,13 +105,12 @@ export function createRenderer(options) {
         }
         //oldProps里有但是newProps里面没有的要删除
         for(const key in oldProps){
-            const prevProps = oldProps[key]
-            const prevProp = null
+            const prevProp = oldProps[key]
             if(!(key in newProps)){
                 //以oldProps为基准遍历
                 //而且得到的值是newProps内没有的
                 //所以交给host更新时，把新的值设置为null
-                hostPatchProp(el,key,prevProp,nextProp)
+                hostPatchProp(el,key,prevProp,null)
             }
         }
     }
@@ -126,7 +126,7 @@ export function createRenderer(options) {
             }
         }else {
             //如果之前是array_children,现在也是array_children,就需要对比
-            if(prevShapeFlag & ShapeFlag.ARRAY_CHILDREN){
+            if(prevShapeFlag & ShapeFlags.ARRAY_CHILDREN){
                 if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
                     patchKeyedChildren(c1, c2, container, anchor, parentComponent);
                   }
@@ -167,7 +167,7 @@ export function createRenderer(options) {
             const nextChild = c2[e2]
             if(!isSameVNodeType(prevChild,nextChild)){
                 console.log("两个child不相等（从右往左比对")
-                console.log(`prevChild:${preChild}`)
+                console.log(`prevChild:${prevChild}`)
                 console.log(`nextChild:${nextChild}`)
                 break;
             }
@@ -184,7 +184,7 @@ export function createRenderer(options) {
             const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor
             while(i<=e2) {
                 console.log(`需要新创建一个vnode:${c2[i].key}`)
-                patch(nul,c2[i],container,anchor,parentComponent)
+                patch(null,c2[i],container,anchor,parentComponent)
                 i++
             }
         }else if(i>e2&&i<=e1) {
@@ -342,13 +342,6 @@ export function createRenderer(options) {
             patch(null,VNodeChild,container)
         })
     }
-    function processElement(n1,n2,container,anchor,parentComponent) {
-        if(!n1) {
-            mountElement(n2,container,anchor)
-        }else{
-            updateElement(n1,n2,container,anchor,parentComponent)
-        }
-    }
     function processComponent(n1,n2,container,parentComponent) {
         //如果n1没有值，那么就是mount
         if(!n1) {
@@ -390,8 +383,8 @@ export function createRenderer(options) {
         setupComponent(instance)
         setupRenderEffect(instance,initialVNode,container)           
     }
+    
     function setupRenderEffect(instance,initialVNode,container) {
-
         function componentUpdateFn(){
             //组件还没挂载
             if(!instance.isMounted) {
@@ -399,7 +392,7 @@ export function createRenderer(options) {
                 //等到后面响应式的值变更后会再次触发函数
                 const proxyToUse = instance.proxy
                 //在render函数将this指向proxy
-                const subTree = (instance.subTree = normalizeChildren(
+                const subTree = (instance.subTree = normalizeVNode(
                     instance.render.call(proxyToUse,proxyToUse)
                 ))
                 console.log("subTree",subTree)
@@ -409,7 +402,7 @@ export function createRenderer(options) {
                 //基于render返回的vnode,再次进行渲染,递归渲染subTree
                 patch(null,subTree,container,null,instance)
                 //把root element赋值给组件的vnode.el,为后续调用$el的时候获取值
-                initialVNode.el = subTree.el
+                initialVNode.el = subTree?.el
                 console.log(`${instance.type.name}:触发mounted hook`)
                 instance.isMounted=true
             }else{
@@ -439,14 +432,14 @@ export function createRenderer(options) {
                 console.log(`${instance.type.name}:触发updated hook`)
                 console.log(`${instance.type.name}:复发onVnodeUpdated hook`)
             }
-        }
+        };
         instance.update = effect(componentUpdateFn,{
             scheduler: () => {
                 //把effect推到微任务的时候再执行
                 //queueJob(effect)
                 queueJob(instance.update)
             }
-        }
+        })
     }
     function updateComponentPreRender(instance,nextVNode){
         nextVNode.component=instance
@@ -457,11 +450,12 @@ export function createRenderer(options) {
         instance.props = props
         console.log("更新组件的slots")
     }
-    return render{
+    return {
         render,
         createApp: createAppAPI(render)
     }  
 }
+//返回最长递增子序列的索引值
 function getSequence(arr:number[]):number[] {
     const p = arr.slice();
     const result = [0];

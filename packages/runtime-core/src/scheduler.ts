@@ -41,7 +41,7 @@ function flushJobs() {
 }
 function flushPreFlushCbs() {
     //执行所有pre类型的job
-    for(ley i=0;i<activePreFlushCbs.length;i++){
+    for(let i=0;i<activePreFlushCbs.length;i++){
         activePreFlushCbs[i]()
     }
 }
