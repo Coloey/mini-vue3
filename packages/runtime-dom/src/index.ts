@@ -1,5 +1,5 @@
 import { isOn } from "@mini-vue3/shared";
-
+import { createRenderer } from "@mini-vue3/runtime-core"
 function createElement(type) {
   console.log("CreateElement", type);
   const element = document.createElement(type);
@@ -12,7 +12,7 @@ function setText(node, text) {
   node.nodeValue = text;
 }
 function setElementText(el, text) {
-  console.log("SetElementText".el, text);
+  console.log("SetElementText",el, text);
   el.textContent = text;
 }
 function patchProp(el, key, preValue, nextValue) {

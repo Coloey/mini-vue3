@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@mini-vue3/reactivity": "workspace:^1.0.0",
+    "@mini-vue3/runtime-dom": "workspace:^1.0.0",
     "@mini-vue3/runtime-test": "workspace:^1.0.0",
     "@mini-vue3/shared": "workspace:^1.0.0"
   }

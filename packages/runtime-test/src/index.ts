@@ -6,3 +6,4 @@ export const {render} = createRenderer(extend({patchProp},nodeOps))
 export * from "./nodeOps"
 export * from "./patchProp"
 export * from "@mini-vue3/runtime-core"
+export * from "./serialize"

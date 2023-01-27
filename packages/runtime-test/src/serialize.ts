@@ -25,11 +25,11 @@ function serializeElement(node){
     })
     .filter(Boolean)
     .join("")
-    return `<${node.tag} ${props ? `${props}` : ``}> ${serializeInner(node)}</${node.tag}>`
+    return `<${node.tag}${props ? `${props}` : ``}>${serializeInner(node)}</${node.tag}>`
 }
-function serializeInner(node){
+export function serializeInner(node){
     return node.children.map((c) => serialize(c)).join(``)
 }
-function serializeText(node){
+export function serializeText(node){
     return node.text
 }

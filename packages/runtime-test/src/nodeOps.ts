@@ -9,7 +9,7 @@ function createElement(tag: string) {
         tag,
         id: nodeId++,
         type: NodeType.ELEMENT,
-        props:{},
+        props: {},
         children: [],
         parentNode: null
     }
