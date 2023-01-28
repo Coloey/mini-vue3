@@ -6,6 +6,7 @@
   "module": "lib/mini-vue3.esm.js",
   "scripts": {
     "dev": "rollup -c -w",
+    "build": "rollup -c",
     "test": "jest",
     "test:update": "jest --updateSnapshot"
   },

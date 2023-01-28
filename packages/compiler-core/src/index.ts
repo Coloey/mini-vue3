@@ -1,3 +1,1 @@
-import { baseCompile } from "./compile";
-
-export baseCompile
+export { baseCompile } from "./compile";
